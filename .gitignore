@@ -1,0 +1,26 @@
+# Large video files
+*.mp4
+*.mov
+*.avi
+*.mkv
+
+# Upload directories
+backend/uploads/
+frontend/src/assets/hero.mp4
+
+# Build directories
+*/dist/
+frontend/dist/
+admin/dist/
+
+# Environment files
+.env
+.env.local
+.env.production
+
+# Node modules
+node_modules/
+
+# OS files
+.DS_Store
+Thumbs.db
