@@ -17,7 +17,7 @@ cd admin && npm install
 # Frontend
 cd frontend && npm install
 
-# Backend (if exists or create new)
+# Backend 
 cd backend && npm install
 
 Create environment files:
