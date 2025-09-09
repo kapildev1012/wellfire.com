@@ -52,14 +52,23 @@ const Navbar = () => {
   return (
     <>
       {/* Navbar */}
-      <div className="fixed top-0 left-0 right-0 z-50 bg-black shadow-sm px-6 sm:px-8 md:px-12 py-4 flex items-center justify-between">
-        {/* Logo */}
-        <Link to="/" className="hidden md:block">
-          <img src={assets.logo} alt="logo" className="w-20 h-auto" />
+      <div className={`fixed top-0 left-0 right-0 z-50 shadow-sm px-6 sm:px-8 md:px-12 py-4 flex items-center justify-between transition-all duration-300 ${
+        mobileOpen 
+          ? 'bg-black bg-opacity-60 backdrop-blur-xl backdrop-saturate-150' 
+          : 'bg-black'
+      }`}>
+        {/* Logo - Now visible on all screen sizes */}
+        <Link to="/" className="flex items-center">
+          {/* Show image logo on medium screens and up */}
+          <img src={assets.logo} alt="logo" className="hidden md:block w-20 h-auto" />
+          
+          {/* Show text logo on mobile */}
+          <div className="md:hidden">
+            <span className="text-white text-xl font-bold tracking-wide">
+              Wellfire
+            </span>
+          </div>
         </Link>
-
-        {/* Empty div for mobile to center the menu button */}
-        <div className="md:hidden"></div>
 
         {/* Desktop Links - Simple horizontal layout */}
         <nav className="hidden lg:flex items-center gap-8">
@@ -70,7 +79,7 @@ const Navbar = () => {
               className={({ isActive }) =>
                 `text-sm font-medium transition-colors ${
                   isActive
-                    ? "text-white border-b-2 border-black pb-1"
+                    ? "text-white border-b-2 border-white pb-1"
                     : "text-gray-300 hover:text-gray-400"
                 }`
               }
@@ -107,7 +116,7 @@ const Navbar = () => {
           ) : (
             <button
               onClick={() => navigate("/login")}
-              className="px-4 py-2 text-sm font-medium text-white bg-black rounded hover:bg-gray-800 transition-colors"
+              className="px-4 py-2 text-sm font-medium text-white bg-gray-800 rounded hover:bg-gray-700 transition-colors"
             >
               Login
             </button>
@@ -117,29 +126,32 @@ const Navbar = () => {
         {/* Mobile Menu Button */}
         <button
           onClick={() => setMobileOpen(true)}
-          className="md:hidden p-2 text-gray-700 hover:bg-gray-100 rounded"
+          className="md:hidden p-2 text-white hover:bg-gray-800 rounded"
         >
           <FaBars className="w-5 h-5" />
         </button>
       </div>
 
-      {/* Mobile Menu Overlay - Unchanged */}
+      {/* Mobile Menu Overlay */}
       {mobileOpen && (
         <div
-          className="md:hidden fixed inset-0 z-40 bg-black bg-opacity-50"
+          className="md:hidden fixed inset-0 z-40 bg-black bg-opacity-90"
           onClick={() => setMobileOpen(false)}
         />
       )}
 
-      {/* Mobile Slide Menu - Unchanged */}
+      {/* Mobile Slide Menu */}
       <div
-        className={`md:hidden fixed top-0 right-0 h-full w-4/5 bg-black text-white z-50 transform transition-transform ${
+        className={`md:hidden fixed top-0 right-0 h-full w-full bg-black text-white z-50 transform transition-transform ${
           mobileOpen ? "translate-x-0" : "translate-x-full"
         }`}
       >
-        {/* Header */}
+        {/* Header with Wellfire branding */}
         <div className="flex justify-between items-center p-4 border-b border-gray-700">
-          <h2 className="text-lg font-bold">Menu</h2>
+          <div className="flex items-center gap-3">
+            <span className="text-xl font-bold text-white tracking-wide">Wellfire</span>
+            <span className="text-sm text-gray-400">Menu</span>
+          </div>
           <button
             onClick={() => setMobileOpen(false)}
             className="p-2 hover:bg-gray-800 rounded"
@@ -172,36 +184,40 @@ const Navbar = () => {
           <div className="border-t border-white border-opacity-30 mt-4 pt-4 bg-white bg-opacity-5 backdrop-blur-sm">
             {token ? (
               <>
-                <div className="mb-3">
-                  <div className="flex items-center gap-3 p-3 bg-white bg-opacity-15 backdrop-blur-md rounded-lg shadow-lg border border-white border-opacity-30">
-                    <FaUserCircle className="w-5 h-5 text-white drop-shadow-md" />
-                    <span className="text-white font-medium drop-shadow-sm">
+                <div className="mb-3 sm:mb-4 px-3 sm:px-4">
+                  <div className="flex items-center gap-3 sm:gap-4 py-3 sm:py-4 px-3 sm:px-4 bg-white bg-opacity-15 backdrop-blur-md rounded-lg shadow-lg border border-white border-opacity-30">
+                    <FaUserCircle className="w-5 h-5 sm:w-6 sm:h-6 text-white drop-shadow-md" />
+                    <span className="text-white font-medium drop-shadow-sm text-sm sm:text-base">
                       Account
                     </span>
                   </div>
                 </div>
-                <button
-                  onClick={() => {
-                    logout();
-                    setMobileOpen(false);
-                  }}
-                  className="w-full flex items-center gap-3 py-3 px-3 bg-red-600 bg-opacity-90 hover:bg-red-700 hover:bg-opacity-95 backdrop-blur-md rounded-lg text-white font-medium shadow-lg transition-all duration-200 border border-red-500 border-opacity-50 hover:shadow-xl"
-                >
-                  <FaSignOutAlt className="w-4 h-4 drop-shadow-sm" />
-                  <span className="drop-shadow-sm">Logout</span>
-                </button>
+                <div className="px-3 sm:px-4">
+                  <button
+                    onClick={() => {
+                      logout();
+                      setMobileOpen(false);
+                    }}
+                    className="w-full flex items-center gap-3 sm:gap-4 py-3 sm:py-4 px-3 sm:px-4 bg-red-600 bg-opacity-90 hover:bg-red-700 hover:bg-opacity-95 backdrop-blur-md rounded-lg text-white font-medium shadow-lg transition-all duration-200 border border-red-500 border-opacity-50 hover:shadow-xl"
+                  >
+                    <FaSignOutAlt className="w-4 h-4 sm:w-5 sm:h-5 drop-shadow-sm" />
+                    <span className="drop-shadow-sm text-sm sm:text-base">Logout</span>
+                  </button>
+                </div>
               </>
             ) : (
-              <button
-                onClick={() => {
-                  navigate("/login");
-                  setMobileOpen(false);
-                }}
-                className="w-full flex items-center justify-center gap-3 py-3 px-3 bg-red-600 bg-opacity-90 hover:bg-red-700 hover:bg-opacity-95 backdrop-blur-md rounded-lg text-white font-medium shadow-lg transition-all duration-200 border border-red-500 border-opacity-50 hover:shadow-xl"
-              >
-                <FaUserCircle className="w-4 h-4 drop-shadow-sm" />
-                <span className="drop-shadow-sm">Login / Sign Up</span>
-              </button>
+              <div className="px-3 sm:px-4">
+                <button
+                  onClick={() => {
+                    navigate("/login");
+                    setMobileOpen(false);
+                  }}
+                  className="w-full flex items-center justify-center gap-3 sm:gap-4 py-3 sm:py-4 px-3 sm:px-4 bg-red-600 bg-opacity-90 hover:bg-red-700 hover:bg-opacity-95 backdrop-blur-md rounded-lg text-white font-medium shadow-lg transition-all duration-200 border border-red-500 border-opacity-50 hover:shadow-xl"
+                >
+                  <FaUserCircle className="w-4 h-4 sm:w-5 sm:h-5 drop-shadow-sm" />
+                  <span className="drop-shadow-sm text-sm sm:text-base">Login / Sign Up</span>
+                </button>
+              </div>
             )}
           </div>
         </div>

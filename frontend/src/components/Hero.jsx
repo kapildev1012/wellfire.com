@@ -63,17 +63,17 @@ const Hero = () => {
     >
       {/* Mobile Layout */}
       {isMobile ? (
-        <div className="w-full">
+        <div className="w-full px-4 py-6 sm:px-6 sm:py-8">
           {/* Video Section for Mobile */}
           <motion.section
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 1.2, ease: "easeOut" }}
-            className="relative w-full overflow-hidden"
+            className="relative w-full overflow-hidden rounded-lg shadow-2xl"
           >
             {/* Loading placeholder */}
             {!isVideoLoaded && (
-              <div className="w-full h-64 bg-gray-900 flex items-center justify-center">
+              <div className="w-full h-64 bg-gray-900 flex items-center justify-center rounded-lg">
                 <div className="animate-pulse text-white text-sm">
                   Loading...
                 </div>
@@ -88,14 +88,14 @@ const Hero = () => {
               muted
               playsInline
               poster="" // Add poster image path here
-              className={`w-full h-auto min-h-[250px] max-h-[70vh] object-cover ${
+              className={`w-full h-auto min-h-[250px] max-h-[70vh] object-cover rounded-lg ${
                 !isVideoLoaded ? "hidden" : ""
               }`}
               style={{ aspectRatio: "16/9" }}
             />
 
             {/* Subtle overlay for mobile */}
-            <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-black/30 pointer-events-none"></div>
+            <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-black/30 pointer-events-none rounded-lg"></div>
 
             {/* Mobile Text Overlay */}
             <AnimatePresence>
@@ -105,23 +105,23 @@ const Hero = () => {
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -30 }}
                   transition={{ duration: 0.6, ease: "easeOut" }}
-                  className="absolute inset-0 flex items-center justify-center z-10 px-4"
+                  className="absolute inset-0 flex items-center justify-center z-10 px-6 py-4"
                 >
-                  <div className="text-center text-white uppercase tracking-wide max-w-sm">
+                  <div className="text-center text-white uppercase tracking-wide max-w-sm mx-auto px-4">
                     <motion.h1
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ duration: 0.6, delay: 0.1 }}
-                      className="text-2xl sm:text-3xl mb-3 leading-tight"
+                      className="text-2xl sm:text-3xl mb-4 leading-tight"
                       style={{ textShadow: "2px 2px 4px rgba(0,0,0,0.8)" }}
                     >
-                      YOUR TITLE HERE
+                      WELLFIRE
                     </motion.h1>
                     <motion.p
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ duration: 0.6, delay: 0.2 }}
-                      className="text-xs sm:text-sm mb-4 leading-relaxed opacity-90"
+                      className="text-xs sm:text-sm mb-4 leading-relaxed opacity-90 px-2"
                       style={{ textShadow: "1px 1px 2px rgba(0,0,0,0.8)" }}
                     >
                       YOUR SUBTITLE OR DESCRIPTION HERE
@@ -174,16 +174,16 @@ const Hero = () => {
                       className="text-4xl md:text-6xl lg:text-8xl mb-6"
                       style={{ textShadow: "3px 3px 6px rgba(0,0,0,0.7)" }}
                     >
-                      YOUR TITLE HERE
+                      WELLFIRE
                     </motion.h1>
                     <motion.p
                       initial={{ opacity: 0, y: 30 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ duration: 0.8, delay: 0.4 }}
-                      className="text-sm md:text-base lg:text-lg mb-8 max-w-3xl"
+                      className="text-sm md:text-base lg:text-lg text-centre mb-8 max-w-3xl"
                       style={{ textShadow: "2px 2px 4px rgba(0,0,0,0.7)" }}
                     >
-                      YOUR SUBTITLE OR DESCRIPTION HERE
+                      WE DREAM WE CREATE WE PRESENT
                     </motion.p>
                   </div>
                 </motion.div>
