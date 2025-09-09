@@ -1,20 +1,20 @@
 import cors from "cors";
 import "dotenv/config";
 import express from "express";
-import fs from 'fs';
-import path from 'path';
-import multer from "multer";
-import connectCloudinary from "./config/cloudinary.js";
+import multer from "multer"; // Added missing import
+import connectCloudinary from "./config/Cloudinary.js";
 import connectDB from "./config/mongodb.js";
 
 // Routes
+import cartRouter from "./routes/cartRoute.js";
 import investmentProductRouter from "./routes/investmentProductRoute.js";
 import investorRouter from "./routes/investorRoute.js";
+import orderRouter from "./routes/orderRoute.js";
 import userRouter from "./routes/userRoute.js";
 
 // App Config
 const app = express();
-const port = process.env.PORT || 4000
+const port = process.env.PORT || 4000;
 
 // Connect to database and cloud services
 connectDB();
@@ -24,59 +24,41 @@ connectCloudinary();
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 app.use(cors({
-    origin: [
-        "http://localhost:5173", 
-        "http://localhost:5174", 
-        "http://localhost:5175", 
-        "http://localhost:5176", 
-        "http://localhost:3000",
-        "http://localhost:4173",
-        process.env.FRONTEND_URL || "http://localhost:5173"
-    ].filter(Boolean),
-    credentials: true,
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
+    origin: ["http://localhost:5173", "http://localhost:5174", "http://localhost:5175", "http://localhost:5176", "http://localhost:3000", "https://your-frontend-domain.com"],
+    credentials: true
 }));
 
 // Create uploads directory if it doesn't exist
+import fs from 'fs';
+import path from 'path';
 const uploadDir = path.join(process.cwd(), 'uploads');
 if (!fs.existsSync(uploadDir)) {
     fs.mkdirSync(uploadDir, { recursive: true });
     console.log("✅ Uploads directory created");
 }
 
-// Health check endpoint
-app.get("/health", (req, res) => {
-    res.json({
-        success: true,
-        message: "✅ Server is healthy",
-        timestamp: new Date().toISOString(),
-        uptime: process.uptime(),
-        memory: process.memoryUsage(),
-        version: process.version
-    });
-});
-
-// Root route
+// Test route - Add this to verify server is working
 app.get("/", (req, res) => {
     res.json({
         success: true,
-        message: "✅ Wellfire Investment Platform API",
-        version: "1.0.0",
+        message: "✅ API Working - Investment Platform Ready",
         timestamp: new Date().toISOString(),
-        endpoints: {
-            health: "/health",
-            products: "/api/investment-product",
-            investors: "/api/investor",
-            users: "/api/user"
-        }
+        routes: [
+            "/api/user",
+            "/api/cart",
+            "/api/order",
+            "/api/investment-product",
+            "/api/investor"
+        ]
     });
 });
 
 // API Endpoints
+app.use("/api/user", userRouter);
+app.use("/api/cart", cartRouter);
+app.use("/api/order", orderRouter);
 app.use("/api/investment-product", investmentProductRouter);
 app.use("/api/investor", investorRouter);
-app.use("/api/user", userRouter);
 
 // Enhanced error handling
 app.use((error, req, res, next) => {
@@ -111,14 +93,11 @@ app.use("*", (req, res) => {
         message: `Route not found: ${req.method} ${req.originalUrl}`,
         availableRoutes: [
             "GET /",
-            "GET /health",
-            "GET /api/investment-product/list",
-            "POST /api/investment-product/add",
-            "GET /api/investment-product/:id",
-            "POST /api/investor/add",
-            "GET /api/investor/list",
             "POST /api/user/register",
-            "POST /api/user/login"
+            "POST /api/user/login",
+            "POST /api/user/admin",
+            "POST /api/investment-product/add",
+            "GET /api/investment-product/list"
         ]
     });
 });
