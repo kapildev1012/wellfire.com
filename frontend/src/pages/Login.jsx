@@ -38,7 +38,7 @@ const fields = {
     {
       id: "password",
       type: "password",
-      placeholder: "Password",
+      placeholder: "Create Password",
       autoComplete: "new-password",
       required: true,
     },
@@ -125,28 +125,77 @@ const Login = () => {
     const errs = validate(mode, values);
     setErrors(errs);
     if (Object.keys(errs).length) return;
+    
     setIsLoading(true);
+    setErrors({}); // Clear previous errors
+    
     try {
-      const endpoint = mode === "Sign Up" ? "/register" : "/login";
-      const body =
-        mode === "Sign Up"
-          ? values
-          : { email: values.email, password: values.password };
-      const { data } = await axios.post(
-        `${backendUrl}/api/user${endpoint}`,
-        body
-      );
+      const baseUrl = 'http://localhost:4000';
+      const endpoint = mode === "Sign Up" ? "/api/user/register" : "/api/user/login";
+      const body = mode === "Sign Up" ? values : { 
+        email: values.email, 
+        password: values.password 
+      };
+      
+      const fullUrl = `${baseUrl}${endpoint}`;
+      console.log('Making request to:', fullUrl);
+      
+      const { data } = await axios.post(fullUrl, body, {
+        headers: { 'Content-Type': 'application/json' },
+        withCredentials: true
+      });
+      
+      console.log('Response data:', data);
 
-      if (data.success) {
+      if (data.success && data.token) {
+        // Handle successful authentication
         setToken(data.token);
         localStorage.setItem("token", data.token);
+        
+        // Clear form on successful registration
+        if (mode === "Sign Up") {
+          setValues({ name: "", email: "", password: "" });
+          setMode("Login");
+          // Show success message for registration
+          setErrors({ 
+            general: "Registration successful! Please sign in.",
+            type: "success"
+          });
+        } else {
+          // Redirect on successful login
+          navigate("/");
+        }
       } else {
-        setErrors({ general: data.message });
+        // Handle API success but no token
+        setErrors({ 
+          general: data.message || 'Authentication failed. Please try again.' 
+        });
       }
     } catch (err) {
-      setErrors({
-        general: err.response?.data?.message || "Something went wrong",
-      });
+      console.error('Error during login:', err);
+      let errorMessage = 'Something went wrong';
+      
+      if (err.response) {
+        // The request was made and the server responded with a status code
+        // that falls out of the range of 2xx
+        console.error('Response data:', err.response.data);
+        console.error('Response status:', err.response.status);
+        console.error('Response headers:', err.response.headers);
+        
+        errorMessage = err.response.data?.message || 
+                      err.response.data?.error || 
+                      `Server responded with status ${err.response.status}`;
+      } else if (err.request) {
+        // The request was made but no response was received
+        console.error('No response received:', err.request);
+        errorMessage = 'No response from server. Please check your connection.';
+      } else {
+        // Something happened in setting up the request that triggered an Error
+        console.error('Error:', err.message);
+        errorMessage = err.message;
+      }
+      
+      setErrors({ general: errorMessage });
     } finally {
       setIsLoading(false);
     }
@@ -169,7 +218,11 @@ const Login = () => {
         </h2>
 
         {errors.general && (
-          <div className="mb-4 bg-orange-900/70 border border-orange-500 text-orange-200 p-3 rounded text-sm text-center">
+          <div className={`mb-4 p-3 rounded text-sm text-center ${
+            errors.type === 'success' 
+              ? 'bg-green-900/70 border border-green-500 text-green-200' 
+              : 'bg-orange-900/70 border border-orange-500 text-orange-200'
+          }`}>
             {errors.general}
           </div>
         )}
